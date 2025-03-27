@@ -1,0 +1,41 @@
+
+--- Insert Query for Customer Table ---
+
+insert into tb_customer (id, name, email, address, region) values
+('c456', 'john smith', 'johnsmith@email.com', '123 main st, anytown, ca 12345', 'north america'),
+('c789', 'emily davis', 'emilydavis@email.com', '456 elm st, otherville, ny 54321', 'europe'),
+('c101', 'sarah johnson', 'sarahjohnson@email.com', '789 oak st, new city, tx 75024', 'south america');
+
+
+--- Insert Query for Product Table ---
+
+insert into tb_product (id, product_name, category) values
+('p123', 'ultraboost running shoes', 'shoes'),
+('p456', 'iphone 15 pro', 'electronics'),
+('p789', 'levis 501 jeans', 'clothing'),
+('p234', 'sony wh-1000xm5 headphones', 'electronics');
+
+
+--- Insert Query for Order Table ---
+
+insert into tb_order (id, customer_id, date_of_sale, payment_method) values
+('1001', 'c456', '2023-12-15', 'credit card'),
+('1002', 'c789', '2024-01-03', 'paypal'),
+('1003', 'c456', '2024-02-28', 'debit card'),
+('1004', 'c101', '2024-03-10', 'credit card'),
+('1005', 'c789', '2024-04-22', 'paypal'),
+('1006', 'c101', '2024-05-18', 'debit card');
+
+
+--- Insert Query for Sales Table ---
+
+insert into tb_sales (id, order_id, product_id, quantity_sold, unit_price, discount, shipping_cost) values
+('s1001', '1001', 'p123', 2, 180.00, 0.10, 10.00),
+('s1002', '1002', 'p456', 1, 1299.00, 0.00, 15.00),
+('s1003', '1003', 'p789', 3, 59.99, 0.20, 5.00),
+('s1004', '1004', 'p123', 1, 180.00, 0.00, 8.00),
+('s1005', '1005', 'p234', 1, 349.99, 0.15, 12.00),
+('s1006', '1006', 'p456', 2, 1299.00, 0.05, 20.00);
+
+
+

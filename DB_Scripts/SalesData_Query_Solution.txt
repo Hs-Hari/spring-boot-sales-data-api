@@ -1,0 +1,143 @@
+- **Revenue Calculations:**
+
+    - **Total Revenue:** (For a date range)
+	
+		select sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_revenue 
+		from tb_sales s 
+		inner join tb_order o on s.order_id = o.id 
+		where o.date_of_sale between '2024-01-01' and '2024-12-31';
+
+		
+    - **Total Revenue by Product:** (For a date range)
+	
+		select p.product_name, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_revenue 
+		from tb_sales s 
+		inner join tb_order o on s.order_id = o.id 
+		inner join tb_product p on s.product_id = p.id 
+		where o.date_of_sale between '2024-01-01' and '2024-12-31' 
+		group by p.product_name;
+
+    - **Total Revenue by Category:** (For a date range)
+	
+		select p.category, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_revenue 
+		from tb_sales s 
+		inner join tb_order o on s.order_id = o.id 
+		inner join tb_product p on s.product_id = p.id 
+		where o.date_of_sale between '2024-01-01' and '2024-12-31' 
+		group by p.category;
+
+
+    - **Total Revenue by Region:** (For a date range)
+	
+		select c.region, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_revenue 
+		from tb_sales s 
+		inner join tb_order o on s.order_id = o.id 
+		inner join tb_customer c on o.customer_id = c.id 
+		where o.date_of_sale between '2024-01-01' and '2024-12-31' 
+		group by c.region;
+
+	
+- **Top N Products:**
+
+    - **Overall:** (Based on quantity sold within a date range)
+	
+		select top 5 p.product_name, sum(s.quantity_sold) as total_quantity_sold
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_product p on s.product_id = p.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by p.product_name
+		order by total_quantity_sold desc;
+
+    - **By Category:** (Based on quantity sold within a date range)
+	
+		select top 5 p.category, p.product_name, sum(s.quantity_sold) as total_quantity_sold
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_product p on s.product_id = p.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by p.category, p.product_name
+		order by p.category, total_quantity_sold desc;
+
+
+    - **By Region:** (Based on quantity sold within a date range)
+	
+		select top 5 c.region, p.product_name, sum(s.quantity_sold) as total_quantity_sold
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_product p on s.product_id = p.id
+		inner join tb_customer c on o.customer_id = c.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by c.region, p.product_name
+		order by c.region, total_quantity_sold desc;
+
+- **Customer Analysis:**
+
+    - **Total Number of Customers:** (Within a date range)
+	
+		select count(distinct o.customer_id) as total_customers
+		from tb_order o
+		where o.date_of_sale between '2024-01-01' and '2024-12-31';
+
+    - **Total Number of Orders:** (Within a date range)
+	
+		select count(o.id) as total_orders
+		from tb_order o
+		where o.date_of_sale between '2024-01-01' and '2024-12-31';
+
+    - **Average Order Value:** (Within a date range)
+	
+		select avg(order_value) as average_order_value
+		from (
+		select o.id as order_id, sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as order_value
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by o.id
+		) as order_summary;
+
+
+- **Other Calculations:**
+
+    - **Profit Margin by Product:** (Within a date range)
+	
+		select p.product_name, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_revenue, 
+		sum(s.quantity_sold * (s.unit_price - s.discount - s.shipping_cost)) / sum(s.quantity_sold * s.unit_price) * 100 as profit_margin_percentage
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_product p on s.product_id = p.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by p.product_name;
+
+
+    - **Customer Lifetime Value:** (Within a date range)
+	
+		select c.id as customer_id, c.name as customer_name, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_spent
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_customer c on o.customer_id = c.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by c.id, c.name
+		order by total_spent desc;
+
+
+    - **Customer Segmentation:** (Within a date range)
+	
+		select c.id as customer_id, c.name as customer_name, 
+		sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) as total_spent,
+		case 
+		when sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) > 1000 then 'High Spending'
+		when sum((s.quantity_sold * s.unit_price) - s.discount - s.shipping_cost) between 500 and 1000 then 'Medium Spending'
+		else 'Low Spending'
+		end as customer_segment
+		from tb_sales s
+		inner join tb_order o on s.order_id = o.id
+		inner join tb_customer c on o.customer_id = c.id
+		where o.date_of_sale between '2024-01-01' and '2024-12-31'
+		group by c.id, c.name
+		order by total_spent desc;

@@ -1,0 +1,62 @@
+--- DB ---
+
+create database saleds_db;
+
+--- Table ---
+
+create table tb_customer (
+
+	id      		varchar(50)		primary key,
+	
+    name        	varchar(50) 	not null 	default '',
+   	email			varchar(50) 	not null 	default '', 
+    address 		varchar(50) 	not null 	default '', 
+	region 			varchar(50) 	not null 	default '', 
+	
+    created_at 		datetime		not null 	default CURRENT_TIMESTAMP, 
+    modified_at 	datetime		not null 	default CURRENT_TIMESTAMP
+);
+
+create table tb_product (
+
+	id      		varchar(50)		primary key,
+	
+    product_name    varchar(50) 	not null 	default '',
+    category        varchar(50) 	not null 	default '',
+	
+    created_at 		datetime		not null 	default CURRENT_TIMESTAMP, 
+    modified_at 	datetime		not null 	default CURRENT_TIMESTAMP
+);
+
+create table tb_order (
+
+	id      		varchar(50)		primary key,
+    customer_id     varchar(50) 	not null,
+	
+    date_of_sale 	date 			not null,
+    payment_method 	varchar(50) 	not null 	default '',	
+	
+    created_at 		datetime		not null 	default CURRENT_TIMESTAMP, 
+    modified_at 	datetime		not null 	default CURRENT_TIMESTAMP,
+	
+	foreign key 	(customer_id) 	references 	tb_customer (id)
+);
+
+create table tb_sales (
+
+	id      		varchar(50)		primary key,
+    order_id 		varchar(50) 	not null,
+    product_id 		varchar(50) 	not null,
+	
+    quantity_sold 	int             not null	default '0',
+    unit_price 		decimal(10, 2) 	not null 	default '0.00', 
+    discount 		decimal(10, 2) 	not null 	default '0.00', 
+    shipping_cost 	decimal(10, 2) 	not null 	default '0.00', 
+	
+	
+    created_at 		datetime		not null 	default CURRENT_TIMESTAMP, 
+    modified_at 	datetime		not null 	default CURRENT_TIMESTAMP,
+	
+    foreign key 	(order_id) 		references 	tb_order (id),
+    foreign key 	(product_id) 	references 	tb_product (id)
+);
