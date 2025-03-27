@@ -1,3 +1,26 @@
+--------------
+
+This is a backend API built with Java Spring Boot, using JDBC and SQL Server for data 
+storage. The API provides endpoints to retrieve revenue data based on different criteria.
+
+Ensure you have the following installed:
+	Java 17 or later,
+	Maven (for building the project),
+	SQL Server (for database storage),
+	Postman (for API testing)
+	
+git clone https://github.com/Hs-Hari/spring-boot-sales-data-api.git
+cd spring-boot-sales-data-api
+
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=sales_db;encrypt=true;trustServerCertificate=true;
+spring.datasource.username=sa
+spring.datasource.password=sqlserver@123
+
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.jpa.database-platform=org.hibernate.dialect.SQLServerDialect
+
+--------------
+
 1. Get Total Revenue
 Endpoint:
 	GET /api/revenue/total
